@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple URL Shortener</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 500px; 
+            margin: 40px auto; 
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #result a {
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h2>URL Shortener</h2>
+    <input type="text" id="longUrl" placeholder="Enter long URL, e.g. https://www.youtube.com">
+    <button onclick="shortenUrl()">Shorten</button>
+
+    <div id="result"></div>
+
+    <script>
+        async function shortenUrl() {
+            const longUrl = document.getElementById('longUrl').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Please wait...';
+
+            try {
+                const response = await fetch('https://1uao0nf1sd.execute-api.us-east-1.amazonaws.com/prod/shorten', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ long_url: longUrl })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    resultDiv.innerHTML = 'Error: ' + (data.error || 'Something went wrong');
+                    return;
+                }
+
+                // Expecting: { message, short_id, short_url }
+                resultDiv.innerHTML = `
+                    <p>Short URL:</p>
+                    <p><a href="${data.short_url}" target="_blank">${data.short_url}</a></p>
+                `;
+            } catch (err) {
+                resultDiv.innerHTML = 'Error calling API: ' + err;
+            }
+        }
+    </script>
+</body>
+</html>
