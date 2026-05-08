@@ -474,3 +474,4 @@ Here is how all 5 AWS services connect together in your finished project:
 | **User is redirected** | Lambda `redirect_url` | Looks up DB, returns 302 |
 
 If still this steps doesn’t work then I am sorry man I am still learning
+If it works try the postman too 
